@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html ng-app="calendarApp">
+    <head>
+        <meta charset="utf-8">
+        <title>Kalendář</title>
+
+        <script src="angular.min.js"></script>
+        <script src="angular-route.js"></script>
+        <script src="app.js"></script>
+        <script src="controllers.js"></script>
+    </head>
+    <body ng-controller="mainController">
+
+        <header>
+            <ul>
+                <li><a href="#">Home</a></li>
+                <li><a href="#/administration">Administrace</a></li>
+                <li><a href="#/logout">Log out</a></li>
+            </ul>
+        </header>
+
+        <div id="main">
+            <div ng-view></div>
+        </div>
+    </body>
+</html>

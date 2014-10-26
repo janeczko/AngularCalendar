@@ -9,7 +9,7 @@ class Api
 
     private function errorAction()
     {
-        $this->jsonResponse(['error' => '404']);
+        $this->jsonResponse(['error' => '404'], false);
     }
 
     private function loginAction()

@@ -1,4 +1,8 @@
-var calendarApp = angular.module('calendarApp', ['ngRoute', 'ngCookies']);
+var isLogged = function() {
+    return !(sessionStorage.user_username == undefined || sessionStorage.user_password == undefined || sessionStorage.user_id == undefined);
+};
+
+var calendarApp = angular.module('calendarApp', ['ngRoute']);
 
 calendarApp.config(function($routeProvider) {
     $routeProvider
@@ -22,10 +26,11 @@ calendarApp.config(function($routeProvider) {
             templateUrl : 'templates/logOut.html',
             controller  : 'logOutController'
         });
-}).run(function($rootScope, $location, $localStorage) {
-    $rootScope.$on("$routeChangeStart", function(event, next, current) {
-        if ($localStorage.getItem('user') == null) {
+}).run(function($rootScope, $location) {
+     $rootScope.$on("$routeChangeStart", function(event, next, current) {
+        console.log(isLogged());
+        if (!isLogged()) {
             $location.path('/login');
         }
-    });
+     });
 });

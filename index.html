@@ -27,11 +27,14 @@
 
                     <section class="top-bar-section">
                         <ul class="right">
-                            <li>
+                            <li ng-if="logged">
                                 <a href="#/administration">Nastavení</a>
                             </li>
-                            <li class="active">
+                            <li ng-if="logged" class="active">
                                 <a href="#/logout">Odhlásit</a>
+                            </li>
+                            <li ng-if="!logged" class="active">
+                                <a href="#/login">Přihlásit</a>
                             </li>
                         </ul>
                     </section>

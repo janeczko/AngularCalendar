@@ -2,7 +2,7 @@
     <form>
         Login: <input type="text" ng-model="user.login">
         Password: <input type="password" ng-model="user.password">
-        <button ng-click="logIn(user)">Login</button>
+        <button ng-click="logIn(user)">Login <span ng-bind-html="spinner | rawHtml">{{spinner}}</span></button>
     </form>
 </div>
 

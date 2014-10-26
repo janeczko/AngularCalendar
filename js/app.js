@@ -26,11 +26,19 @@ calendarApp.config(function($routeProvider) {
             templateUrl : 'templates/logOut.html',
             controller  : 'logOutController'
         });
+
 }).run(function($rootScope, $location) {
+     $rootScope.logged = isLogged();
+
      $rootScope.$on("$routeChangeStart", function(event, next, current) {
-        console.log(isLogged());
         if (!isLogged()) {
             $location.path('/login');
         }
      });
 });
+
+calendarApp.filter('rawHtml', ['$sce', function($sce) {
+    return function(val) {
+        return $sce.trustAsHtml(val);
+    };
+}]);

@@ -7,11 +7,17 @@ class Router
     public function __construct()
     {
         if (isset($_GET['login']))
-            $this->action = 'loginAction';
+            $this->action = 'login';
         else if (isset($_GET['calendar']))
-            $this->action = 'calendarAction';
+            $this->action = 'calendar';
+        else if (isset($_GET['day']))
+            $this->action = 'day';
+        else if (isset($_GET['new_input']))
+            $this->action = 'newInput';
         else
-            $this->action = 'errorAction';
+            $this->action = 'error';
+
+        $this->action .= 'Action';
     }
 
     public function getAction()

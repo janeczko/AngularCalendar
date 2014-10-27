@@ -22,6 +22,11 @@ calendarApp.config(function($routeProvider) {
             controller  : 'administrationController'
         })
 
+        .when('/den/:day', {
+            templateUrl : 'templates/day.html',
+            controller  : 'dayController'
+        })
+
         .when('/logout', {
             templateUrl : 'templates/logOut.html',
             controller  : 'logOutController'
@@ -37,7 +42,7 @@ calendarApp.config(function($routeProvider) {
         }
      });
 
-    $rootScope.todayDate = $filter('date')(new Date, 'dd.MM.yyyy H:m:s');
+    $rootScope.todayDate = $filter('date')(new Date, 'dd.MM.yyyy H:mm:ss');
 });
 
 calendarApp.filter('rawHtml', ['$sce', function($sce) {

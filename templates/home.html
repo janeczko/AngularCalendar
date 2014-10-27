@@ -1,13 +1,13 @@
 <div class="large-12 medium-12 small-12 columns">
-    <h1>Homepage</h1>
+    <h1>{{nameOfMonth(globalMonth)}} {{globalYear}}</h1>
 
     <div class="row">
-        <div class="large-3 medium-5 small-6 columns">
-            <h4>{{nameOfMonth(globalMonth)}} {{globalYear}}</h4>
-        </div>
-        <div class="large-8 medium-7 small-6 columns">
-            <button ng-click="monthBefore()" class="button tiny"><span class="fa fa-chevron-left"></span></button>
-            <button ng-click="monthAfter()" class="button tiny"><span class="fa fa-chevron-right"></span></button>
+        <div class="large-12 medium-12 small-12 columns">
+            <ul class="button-group">
+                <li><button ng-click="monthBefore()" class="button tiny"><span class="fa fa-chevron-left"></span></button></li>
+                <li><button ng-click="monthToday()" class="button tiny">Dnes</button></li>
+                <li><button ng-click="monthAfter()" class="button tiny"><span class="fa fa-chevron-right"></span></button></li>
+            </ul>
         </div>
     </div>
 
@@ -23,7 +23,7 @@
         </tr>
         <tr ng-repeat="week in weeks">
             <td ng-repeat="day in week.days">
-                <a ng-if="day.in_month" href="#">{{day.day}}</a>
+                <a class="accessable-day" ng-if="day.in_month" href="#/den/{{day.url}}"><div style="height: 100%; width: 100%">{{day.day}}</div></a>
                 <a ng-if="!day.in_month"></a>
             </td>
         </tr>

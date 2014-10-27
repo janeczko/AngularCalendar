@@ -1,11 +1,32 @@
 <div class="large-6 medium-6 small-12 columns">
-    <form>
-        Login: <input type="text" ng-model="user.login">
-        Password: <input type="password" ng-model="user.password">
-        <button ng-click="logIn(user)">Login <span ng-bind-html="spinner | rawHtml">{{spinner}}</span></button>
+    <form id="login-form">
+        <div class="row">
+            <div class="large-3 medium-4 small-12 columns">
+                <label for="user_login" class="right inline">Jméno:</label>
+            </div>
+            <div class="large-9 medium-8 small-12 columns">
+                <input type="text" id="user_login" ng-model="user.login">
+            </div>
+        </div>
+        <div class="row">
+            <div class="large-3 medium-4 small-12 columns">
+                <label for="user_password" class="right inline">Heslo:</label>
+            </div>
+            <div class="large-9 medium-8 small-12 columns">
+                <input type="password" id="user_password" ng-model="user.password">
+            </div>
+        </div>
+        <div class="row">
+            <div class="large-12 medium-12 small-12 columns">
+                <button class="button expand" ng-click="logIn(user)">Přihlásit <span ng-bind-html="spinner | rawHtml">{{spinner}}</span></button>
+            </div>
+        </div>
     </form>
 </div>
 
-<div class="large-6 medium-6 small-12 columns">
-    <p>{{loginMessage}}</p>
+<div id="login-message" class="large-6 medium-6 small-12 columns">
+    <div ng-if="loginMessage.length > 0" data-alert class="alert-box alert">
+        {{loginMessage}}
+        <a href="#" class="close">&times;</a>
+    </div>
 </div>

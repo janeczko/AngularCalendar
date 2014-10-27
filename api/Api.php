@@ -24,6 +24,26 @@ class Api
             $this->jsonResponse($user);
     }
 
+    private function dayAction()
+    {
+        if ($this->hasAccess())
+        {
+
+        }
+        else
+            $this->errorAction('access denied');
+    }
+
+    private function newInputAction()
+    {
+        if ($this->hasAccess())
+        {
+            $this->jsonResponse(['get' => $_GET]);
+        }
+        else
+            $this->errorAction('access denied');
+    }
+
     private function calendarAction()
     {
         if ($this->hasAccess())
@@ -70,8 +90,11 @@ class Api
                     $i++;
                 }
 
+                $dayNumber = explode('.', $day)[0];
+
                 $weeks[$i]['days'][] = [
-                    'day' => $day,
+                    'day' => $dayNumber[0] == '0' ? $dayNumber[1] : $dayNumber,
+                    'url' => str_replace('.', '_', $day),
                     'in_month' => $this->isDayInMonth($day, $firstDay)
                 ];
 

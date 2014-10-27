@@ -1,15 +1,60 @@
+.dulezite,
+.partner {
+    display: none;
+}
+
 #page {
     border: 1px solid black;
 }
 
 #page .columns {
-    padding: 15px 20px;
+    padding: 15px 20px 0 20px;
 }
 
 #month-calendar {
     width: 100%;
 }
 
-#header-date:hover {
+#month-calendar,
+#month-calendar td,
+#month-calendar th {
+    text-align: center;
+}
 
+#month-calendar td {
+    padding: 0;
+}
+
+#month-calendar td:hover a.accessable-day {
+    color: white;
+    background-color: #008cba;
+}
+
+#month-calendar td:hover a.accessable-day > div {
+    background-color: #008cba;
+}
+
+.accessable-day > div {
+    padding: 10px;
+}
+
+#login-form label,
+#new-input-form label {
+    text-align: left;
+}
+
+#login-message {
+    margin-top: 13px;
+}
+
+#header-date:hover a {
+    cursor: default !important;
+}
+
+.time-picker select {
+    width: 25%;
+}
+
+#input_text {
+    min-height: 150px;
 }

@@ -29,7 +29,7 @@
 
                         <section class="top-bar-section">
                             <ul class="middle">
-                                <li><a id="header-date">{{todayDate}}</a></li>
+                                <li id="header-date"><a>{{todayDate}}</a></li>
                             </ul>
                         </section>
 
@@ -52,15 +52,11 @@
                     <div class="row" ng-view></div>
                 </div>
             </div>
-
-            <!--<div class="row">-->
-                <!--<div class="large-12 medium-12 small-12 columns">-->
-                    <!--<div ng-view></div>-->
-                <!--</div>-->
-            <!--</div>-->
         </div>
 
         <script src="js/foundation.min.js"></script>
-        <script> $(document).foundation(); </script>
+        <script>
+            $(document).foundation();
+        </script>
     </body>
 </html>

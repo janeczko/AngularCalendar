@@ -64,7 +64,7 @@ calendarApp.controller('mainController', function($scope, $http, $filter, $rootS
     getCalendar(firstDay);
 
     var timeLoop = function() {
-        $rootScope.todayDate = $filter('date')(new Date, 'dd.MM.yyyy H:m:s');
+        $rootScope.todayDate = $filter('date')(new Date, 'dd.MM.yyyy H:mm:ss');
         $timeout(timeLoop, 1000);
     };
 
@@ -77,6 +77,9 @@ calendarApp.controller('mainController', function($scope, $http, $filter, $rootS
         } else {
             $rootScope.globalMonth--;
         }
+
+        var date = new Date(parseInt($rootScope.globalYear), parseInt($rootScope.globalMonth) - 1, 1, 0, 0, 0, 0);
+        getCalendar($filter('date')(date, 'dd_MM_yyyy'));
     };
 
     $scope.monthAfter = function() {
@@ -86,6 +89,21 @@ calendarApp.controller('mainController', function($scope, $http, $filter, $rootS
         } else {
             $rootScope.globalMonth++;
         }
+
+        var date = new Date(parseInt($rootScope.globalYear), parseInt($rootScope.globalMonth) - 1, 1, 0, 0, 0, 0);
+        getCalendar($filter('date')(date, 'dd_MM_yyyy'));
+    };
+
+    $scope.monthToday = function() {
+        var date = new Date();
+        $scope.monthWord = $filter('date')(date, 'MMMM');
+        var firstDay = $filter('date')(firstDayOfMonth(date), 'dd_MM_yyyy');
+
+        $rootScope.globalMonth = $filter('date')(date, 'M');
+        $rootScope.globalYear = $filter('date')(date, 'yyyy');
+        $scope.nameOfMonth = nameOfMonth;
+
+        getCalendar(firstDay);
     };
 });
 
@@ -98,6 +116,51 @@ calendarApp.controller('logOutController', function($scope, $location, $rootScop
 
     $rootScope.logged = false;
     $location.path('/login');
+});
+
+calendarApp.controller('dayController', function($scope, $http, $routeParams) {
+    var dayArray = $routeParams.day.split('_');
+    $scope.day = (dayArray[0].charAt(0) == '0') ? dayArray[0].charAt(1) : dayArray[0];
+    $scope.day += '.' + ((dayArray[1].charAt(0) == '0') ? dayArray[1].charAt(1) : dayArray[1]) + '.' + dayArray[2];
+
+    $scope.openNewInputForm = false;
+    $scope.newInputMessage = '';
+
+    $scope.range = function(number) {
+        return new Array(number);
+    };
+
+    $scope.newInput = function() {
+        $scope.openNewInputForm = $scope.openNewInputForm ? false : true;
+    };
+
+    $scope.addInput = function(input) {
+        if (input == undefined) {
+            $scope.newInputMessage = 'Nebyly vyplněny všechny údaje';
+            return;
+        }
+
+        var input = {
+            from: input.from_h == undefined || input.from_m == undefined ? null : input.from_h + '_' + input.from_m,
+            to: input.to_h == undefined || input.to_m == undefined ? null : input.to_h + '_' + input.to_m,
+            name: input.name == undefined ? null : input.name,
+            text: input.text == undefined ? null : input.text.replace('\n', '<br>')
+        };
+
+        if (input.from == null || input.to == null || input.name == null) {
+            $scope.newInputMessage = 'Nebyly vyplněny všechny údaje';
+            return;
+        }
+
+        $http.get('api/api.php?new_input&' + accessKey() + '&from=' + input.from + '&to=' + input.to + '&name=' + input.name + '&text=' + input.text)
+            .success(function(data) {
+                console.log(data);
+
+                $scope.openNewInputForm = false;
+            });
+
+        console.log(input);
+    };
 });
 
 calendarApp.controller('loginController', function($scope, $http, $location, $rootScope) {
@@ -118,7 +181,17 @@ calendarApp.controller('loginController', function($scope, $http, $location, $ro
                 console.log(data);
 
                 if (!data.status) {
-                    $scope.loginMessage = data.login_error;
+                    switch (data.login_error) {
+                        case 'username does not exist':
+                            $scope.loginMessage = 'Uživatel neexistuje';
+                            break;
+                        case 'bad password':
+                            $scope.loginMessage = 'Špatné heslo';
+                            break;
+                        default:
+                            $scope.loginMessage = 'Chyba';
+                    }
+
                     $scope.spinner = '';
                 } else {
                     sessionStorage.user_username = data.username;

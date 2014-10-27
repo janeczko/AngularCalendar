@@ -27,14 +27,17 @@ calendarApp.config(function($routeProvider) {
             controller  : 'logOutController'
         });
 
-}).run(function($rootScope, $location) {
+}).run(function($rootScope, $location, $filter) {
      $rootScope.logged = isLogged();
+
 
      $rootScope.$on("$routeChangeStart", function(event, next, current) {
         if (!isLogged()) {
             $location.path('/login');
         }
      });
+
+    $rootScope.todayDate = $filter('date')(new Date, 'dd.MM.yyyy H:m:s');
 });
 
 calendarApp.filter('rawHtml', ['$sce', function($sce) {

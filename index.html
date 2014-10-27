@@ -8,6 +8,7 @@
         <link rel="stylesheet" href="css/font-awesome.min.css">
         <link rel="stylesheet" href="css/style.css">
 
+        <script src="js/jquery.js"></script>
         <script src="js/modernizr.js"></script>
         <script src="js/angular.min.js"></script>
         <script src="js/angular-route.js"></script>
@@ -18,37 +19,47 @@
 
         <div id="page-wrapper">
             <div class="row">
-                <nav class="top-bar" data-topbar role="navigation">
-                    <ul class="title-area">
-                        <li class="name">
-                            <h1><a href="#">Kalendář</a></h1>
-                        </li>
-                    </ul>
-
-                    <section class="top-bar-section">
-                        <ul class="right">
-                            <li ng-if="logged">
-                                <a href="#/administration">Nastavení</a>
-                            </li>
-                            <li ng-if="logged" class="active">
-                                <a href="#/logout">Odhlásit</a>
-                            </li>
-                            <li ng-if="!logged" class="active">
-                                <a href="#/login">Přihlásit</a>
+                <div>
+                    <nav class="top-bar large-12 medium-12 small-12 columns" data-topbar role="navigation">
+                        <ul class="title-area">
+                            <li class="name">
+                                <h1><a href="#">Kalendář</a></h1>
                             </li>
                         </ul>
-                    </section>
-                </nav>
-            </div>
 
-            <div class="row">
-                <div class="large-12 medium-12 small-12 columns">
-                    <div ng-view></div>
+                        <section class="top-bar-section">
+                            <ul class="middle">
+                                <li><a id="header-date">{{todayDate}}</a></li>
+                            </ul>
+                        </section>
+
+                        <section class="top-bar-section">
+                            <ul class="right">
+                                <li ng-if="logged">
+                                    <a href="#/administration">Nastavení</a>
+                                </li>
+                                <li ng-if="logged" class="active">
+                                    <a href="#/logout">Odhlásit</a>
+                                </li>
+                                <li ng-if="!logged" class="active">
+                                    <a href="#/login">Přihlásit</a>
+                                </li>
+                            </ul>
+                        </section>
+                    </nav>
+                </div>
+                <div id="page" class="large-12 medium-12 small-12 columns">
+                    <div class="row" ng-view></div>
                 </div>
             </div>
+
+            <!--<div class="row">-->
+                <!--<div class="large-12 medium-12 small-12 columns">-->
+                    <!--<div ng-view></div>-->
+                <!--</div>-->
+            <!--</div>-->
         </div>
 
-        <script src="js/jquery.js"></script>
         <script src="js/foundation.min.js"></script>
         <script> $(document).foundation(); </script>
     </body>

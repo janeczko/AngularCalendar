@@ -6,14 +6,87 @@ var spinnerString = function() {
     return '&nbsp;<span class="fa fa-spinner fa-lg fa-spin"></span>';
 };
 
-calendarApp.controller('mainController', function($scope, $http) {
-    /*init($scope);
+var accessKey = function() {
+    return 'ac_key=' + sessionStorage.user_id + '_' + sessionStorage.user_password;
+};
 
-    $http.get('api/index.php').success(function(data) {
-        console.log(data);
+var firstDayOfMonth = function(date) {
+    return new Date(date.getFullYear(), date.getMonth(), 1);
+};
 
-        $scope.user = data;
-    });*/
+var nameOfMonth = function(month) {
+    switch (parseInt(month)) {
+        case 1:
+            return 'Leden';
+        case 2:
+            return 'Únor';
+        case 3:
+            return 'Březen';
+        case 4:
+            return 'Duben';
+        case 5:
+            return 'Květen';
+        case 6:
+            return 'Červen';
+        case 7:
+            return 'Červenec';
+        case 8:
+            return 'Srpen';
+        case 9:
+            return 'Září';
+        case 10:
+            return 'Říjen';
+        case 11:
+            return 'Listopad';
+        case 12:
+            return 'Prosinec';
+        default:
+            return '';
+    }
+};
+
+calendarApp.controller('mainController', function($scope, $http, $filter, $rootScope, $timeout) {
+    var date = new Date();
+    $scope.monthWord = $filter('date')(date, 'MMMM');
+    var firstDay = $filter('date')(firstDayOfMonth(date), 'dd_MM_yyyy');
+
+    $rootScope.globalMonth = $filter('date')(date, 'M');
+    $rootScope.globalYear = $filter('date')(date, 'yyyy');
+    $scope.nameOfMonth = nameOfMonth;
+
+    var getCalendar = function(firstDay) {
+        $http.get('api/api.php?calendar&' + accessKey() + '&first_day=' + firstDay).
+            success(function(data) {
+                $scope.weeks = data.weeks;
+            });
+    };
+
+    getCalendar(firstDay);
+
+    var timeLoop = function() {
+        $rootScope.todayDate = $filter('date')(new Date, 'dd.MM.yyyy H:m:s');
+        $timeout(timeLoop, 1000);
+    };
+
+    $timeout(timeLoop(), 1000);
+
+    $scope.monthBefore = function() {
+        if ($rootScope.globalMonth == 1) {
+            $rootScope.globalMonth = 12;
+            $rootScope.globalYear--;
+        } else {
+            $rootScope.globalMonth--;
+        }
+    };
+
+    $scope.monthAfter = function() {
+        if ($rootScope.globalMonth == 12) {
+            $rootScope.globalMonth = 1;
+            $rootScope.globalYear++;
+        } else {
+            $rootScope.globalMonth++;
+        }
+    };
 });
 
 calendarApp.controller('administrationController', function($scope) {
@@ -40,8 +113,10 @@ calendarApp.controller('loginController', function($scope, $http, $location, $ro
             return;
         }
 
-        $http.get('api/index.php?login&username=' + user.login + '&password=' + user.password).
+        $http.get('api/api.php?login&username=' + user.login + '&password=' + user.password).
             success(function(data) {
+                console.log(data);
+
                 if (!data.status) {
                     $scope.loginMessage = data.login_error;
                     $scope.spinner = '';

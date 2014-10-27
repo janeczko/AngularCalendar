@@ -1,7 +1,31 @@
-<div>
-    <h1>Home Page</h1>
+<div class="large-12 medium-12 small-12 columns">
+    <h1>Homepage</h1>
 
-    <p>{{ message }}</p>
+    <div class="row">
+        <div class="large-3 medium-5 small-6 columns">
+            <h4>{{nameOfMonth(globalMonth)}} {{globalYear}}</h4>
+        </div>
+        <div class="large-8 medium-7 small-6 columns">
+            <button ng-click="monthBefore()" class="button tiny"><span class="fa fa-chevron-left"></span></button>
+            <button ng-click="monthAfter()" class="button tiny"><span class="fa fa-chevron-right"></span></button>
+        </div>
+    </div>
 
-    <p>{{user.username}}<br>{{user.id}}<br>{{user.password}}</p>
+    <table id="month-calendar">
+        <tr>
+            <th>Pondělí</th>
+            <th>Úterý</th>
+            <th>Středa</th>
+            <th>Čtvrtek</th>
+            <th>Pátek</th>
+            <th>Sobota</th>
+            <th>Neděle</th>
+        </tr>
+        <tr ng-repeat="week in weeks">
+            <td ng-repeat="day in week.days">
+                <a ng-if="day.in_month" href="#">{{day.day}}</a>
+                <a ng-if="!day.in_month"></a>
+            </td>
+        </tr>
+    </table>
 </div>

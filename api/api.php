@@ -1,5 +1,7 @@
 <?php
 
+header('Content-Type: application/json');
+
 mb_internal_encoding('utf-8');
 
 require_once 'DB.php';

@@ -1,7 +1,15 @@
-#page-wrapper > .row {
+#page {
     border: 1px solid black;
 }
 
-#page-wrapper > .row:nth-child(2) {
-    padding-top: 20px;
+#page .columns {
+    padding: 15px 20px;
+}
+
+#month-calendar {
+    width: 100%;
+}
+
+#header-date:hover {
+
 }

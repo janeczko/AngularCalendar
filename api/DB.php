@@ -5,10 +5,10 @@ class DB
 	private static $link;
 	private static $lastInsertId = '';
 	
-	private static $options = array(
+	private static $options = [
 		PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
 		PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8'
-	);
+	];
 	
 	public static function connect($host, $user, $password, $database)
 	{
@@ -25,7 +25,7 @@ class DB
         return self::connect($file['host'], $file['user'], $file['password'], $file['database']);
     }
 	
-	public static function query($sql, $parameters = array())
+	public static function query($sql, $parameters = [])
 	{
 		$query = self::$link->prepare($sql);
 		$query->execute($parameters);
@@ -35,12 +35,12 @@ class DB
 		return $query;
 	}
 
-    public static function oneQuery($sql, $parameters = array())
+    public static function oneQuery($sql, $parameters = [])
     {
         return self::query($sql, $parameters)->fetch();
     }
 
-    public static function moreQuery($sql, $parameters = array())
+    public static function moreQuery($sql, $parameters = [])
     {
         return self::query($sql, $parameters)->fetchAll();
     }

@@ -27,6 +27,11 @@ calendarApp.config(function($routeProvider) {
             controller  : 'dayController'
         })
 
+        .when('/den/:day/zaznam/:id', {
+            templateUrl : 'templates/input.html',
+            controller  : 'inputController'
+        })
+
         .when('/logout', {
             templateUrl : 'templates/logOut.html',
             controller  : 'logOutController'

@@ -4,15 +4,24 @@
     <div class="row">
         <div class="large-12 medium-12 small-12 columns">
             <ul class="button-group">
-                <li><button ng-click="monthBefore()" class="button tiny"><span class="fa fa-chevron-left"></span></button></li>
-                <li><button ng-click="monthToday()" class="button tiny">Dnes</button></li>
-                <li><button ng-click="monthAfter()" class="button tiny"><span class="fa fa-chevron-right"></span></button></li>
+                <li><button ng-click="monthBefore()" class="button small"><span class="fa fa-chevron-left"></span></button></li>
+                <li><button ng-click="monthToday()" class="button small">Dnes</button></li>
+                <li><button ng-click="monthAfter()" class="button small"><span class="fa fa-chevron-right"></span></button></li>
             </ul>
         </div>
     </div>
 
     <table id="month-calendar">
-        <tr>
+        <tr ng-if="smallScreen">
+            <th>Po</th>
+            <th>Út</th>
+            <th>St</th>
+            <th>Čt</th>
+            <th>Pá</th>
+            <th>So</th>
+            <th>Ne</th>
+        </tr>
+        <tr ng-if="!smallScreen">
             <th>Pondělí</th>
             <th>Úterý</th>
             <th>Středa</th>
@@ -23,7 +32,9 @@
         </tr>
         <tr ng-repeat="week in weeks">
             <td ng-repeat="day in week.days">
-                <a class="accessable-day" ng-if="day.in_month" href="#/den/{{day.url}}"><div style="height: 100%; width: 100%">{{day.day}}</div></a>
+                <a class="accessable-day {{todayString == day.url ? 'today' : ''}}" ng-if="day.in_month" href="#/den/{{day.url}}">
+                    <div>{{day.day}}</div>
+                </a>
                 <a ng-if="!day.in_month"></a>
             </td>
         </tr>

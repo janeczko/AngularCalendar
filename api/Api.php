@@ -24,11 +24,78 @@ class Api
             $this->jsonResponse($user);
     }
 
+    private function editInputAction()
+    {
+        if ($this->hasAccess() and isset($_GET['input_id']))
+        {
+            $from = DateTime::createFromFormat('d_m_Y', $_GET['date']);
+            $time = explode('_', $_GET['from']);
+            $from->setTime($time[0] == '00' || $time[0] == '0' ? 0 : $time[0], $time[1], 0);
+
+            $to = DateTime::createFromFormat('d_m_Y', $_GET['date']);
+            $time = explode('_', $_GET['to']);
+            $to->setTime($time[0] == '00' || $time[0] == '0' ? 0 : $time[0], $time[1], 0);
+
+            DB::query('UPDATE `input` SET `name`=?, `from`=?, `to`=?, `note`=? WHERE id=?', [
+                $_GET['name'],
+                $from->format('Y-m-d H:i:s'),
+                $to->format('Y-m-d H:i:s'),
+                $_GET['text'] == 'null' ? null : $_GET['text'],
+                $_GET['input_id']
+            ]);
+
+            $this->jsonResponse();
+        }
+        else
+            $this->errorAction('access denied');
+    }
+
+    private function inputAction()
+    {
+        if ($this->hasAccess() and isset($_GET['input_id']))
+        {
+            $input = DB::oneQuery('SELECT
+                    `id`,
+                    DATE_FORMAT(`from`, "%e.%m.%Y") AS `date`,
+                    `name`,
+                    DATE_FORMAT(`from`, "%H:%i") AS `from`,
+                    DATE_FORMAT(`to`, "%H:%i") AS `to`,
+                    `note`
+                  FROM `input` WHERE id=?', [$_GET['input_id']]);
+
+            $this->jsonResponse(['input' => $input]);
+        }
+        else
+            $this->errorAction('access denied');
+    }
+
+    private function deleteInputAction()
+    {
+        if ($this->hasAccess() and isset($_GET['input_id']))
+        {
+            DB::query('DELETE FROM `input` WHERE id=?', [$_GET['input_id']]);
+
+            $this->jsonResponse();
+        }
+        else
+            $this->errorAction('access denied');
+    }
+
     private function dayAction()
     {
         if ($this->hasAccess())
         {
+            $data = DB::moreQuery('SELECT id,
+                    `name`,
+                    `from`,
+                    `to`,
+                    `note`,
+                    CEIL(TIME_TO_SEC(DATE_FORMAT(`from`, "%H:%i:%s")) / 60) AS from_m,
+                    CEIL(TIME_TO_SEC(DATE_FORMAT(`to`, "%H:%i:%s")) / 60)AS to_m,
+                    CONCAT(DATE_FORMAT(`from`, "%H:%i"), " - ", DATE_FORMAT(`to`, "%H:%i")) AS `time`
+                FROM input WHERE DATE_FORMAT(`from`, "%d_%m_%Y") LIKE ? ORDER BY `from`', [$_GET['date']]);
 
+            $this->jsonResponse(['data' => $data]);
         }
         else
             $this->errorAction('access denied');
@@ -38,7 +105,24 @@ class Api
     {
         if ($this->hasAccess())
         {
-            $this->jsonResponse(['get' => $_GET]);
+            $from = DateTime::createFromFormat('d_m_Y', $_GET['date']);
+            $time = explode('_', $_GET['from']);
+            $from->setTime($time[0] == '00' || $time[0] == '0' ? 0 : $time[0], $time[1], 0);
+
+            $to = DateTime::createFromFormat('d_m_Y', $_GET['date']);
+            $time = explode('_', $_GET['to']);
+            $to->setTime($time[0] == '00' || $time[0] == '0' ? 0 : $time[0], $time[1], 0);
+
+            $parameters = [
+                $_GET['name'],
+                $from->format('Y-m-d H:i:s'),
+                $to->format('Y-m-d H:i:s'),
+                $_GET['text'] == 'null' ? null : $_GET['text']
+            ];
+
+            DB::query('INSERT INTO input (`name`, `from`, `to`, `note`) VALUES (?, ?, ?, ?)', $parameters);
+
+            $this->jsonResponse(['sql-data' => $parameters]);
         }
         else
             $this->errorAction('access denied');

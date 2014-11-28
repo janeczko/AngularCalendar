@@ -14,6 +14,12 @@ class Router
             $this->action = 'day';
         else if (isset($_GET['new_input']))
             $this->action = 'newInput';
+        else if (isset($_GET['input']))
+            $this->action = 'input';
+        else if (isset($_GET['delete_input']))
+            $this->action = 'deleteInput';
+        else if (isset($_GET['edit_input']))
+            $this->action = 'editInput';
         else
             $this->action = 'error';
 

@@ -20,11 +20,12 @@
         <div id="page-wrapper">
             <div class="row">
                 <div>
-                    <nav class="top-bar large-12 medium-12 small-12 columns" data-topbar role="navigation">
+                    <nav class="top-bar" data-topbar role="navigation">
                         <ul class="title-area">
                             <li class="name">
                                 <h1><a href="#">Kalendář</a></h1>
                             </li>
+                            <li class="toggle-topbar menu-icon"><a><span>Menu</span></a></li>
                         </ul>
 
                         <section class="top-bar-section">
@@ -36,9 +37,12 @@
                         <section class="top-bar-section">
                             <ul class="right">
                                 <li ng-if="logged">
+                                    <a href="#"><span class="fa fa-home fa-lg"></span></a>
+                                </li>
+                                <li ng-if="logged">
                                     <a href="#/administration">Nastavení</a>
                                 </li>
-                                <li ng-if="logged" class="active">
+                                <li ng-if="logged">
                                     <a href="#/logout">Odhlásit</a>
                                 </li>
                                 <li ng-if="!logged" class="active">

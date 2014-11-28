@@ -46,7 +46,12 @@ var nameOfMonth = function(month) {
 };
 
 calendarApp.controller('mainController', function($scope, $http, $filter, $rootScope, $timeout) {
+    $scope.range = function(number) {
+        return new Array(number);
+    };
+
     var date = new Date();
+    $scope.todayString = $filter('date')(date, 'dd_MM_yyyy');
     $scope.monthWord = $filter('date')(date, 'MMMM');
     var firstDay = $filter('date')(firstDayOfMonth(date), 'dd_MM_yyyy');
 
@@ -54,10 +59,13 @@ calendarApp.controller('mainController', function($scope, $http, $filter, $rootS
     $rootScope.globalYear = $filter('date')(date, 'yyyy');
     $scope.nameOfMonth = nameOfMonth;
 
+    $scope.smallScreen = document.documentElement.clientWidth <= 1024;
+
     var getCalendar = function(firstDay) {
         $http.get('api/api.php?calendar&' + accessKey() + '&first_day=' + firstDay).
             success(function(data) {
                 $scope.weeks = data.weeks;
+                console.log($scope.weeks);
             });
     };
 
@@ -119,6 +127,7 @@ calendarApp.controller('logOutController', function($scope, $location, $rootScop
 });
 
 calendarApp.controller('dayController', function($scope, $http, $routeParams) {
+    $scope.dayUrl = $routeParams.day;
     var dayArray = $routeParams.day.split('_');
     $scope.day = (dayArray[0].charAt(0) == '0') ? dayArray[0].charAt(1) : dayArray[0];
     $scope.day += '.' + ((dayArray[1].charAt(0) == '0') ? dayArray[1].charAt(1) : dayArray[1]) + '.' + dayArray[2];
@@ -126,8 +135,23 @@ calendarApp.controller('dayController', function($scope, $http, $routeParams) {
     $scope.openNewInputForm = false;
     $scope.newInputMessage = '';
 
-    $scope.range = function(number) {
-        return new Array(number);
+    var loadInputs = function() {
+        $http.get('api/api.php?day&' + accessKey() + '&date=' + $routeParams.day)
+            .success(function(data) {
+                $scope.inputs = data.data;
+                console.log($scope.inputs);
+            });
+    };
+
+    loadInputs();
+
+    $scope.input = {
+        name: '',
+        from_h: 0,
+        from_m: 0,
+        to_h: 0,
+        to_m: 0,
+        text: ''
     };
 
     $scope.newInput = function() {
@@ -135,7 +159,7 @@ calendarApp.controller('dayController', function($scope, $http, $routeParams) {
     };
 
     $scope.addInput = function(input) {
-        if (input == undefined) {
+        if (input == undefined || input.name == '') {
             $scope.newInputMessage = 'Nebyly vyplněny všechny údaje';
             return;
         }
@@ -152,11 +176,11 @@ calendarApp.controller('dayController', function($scope, $http, $routeParams) {
             return;
         }
 
-        $http.get('api/api.php?new_input&' + accessKey() + '&from=' + input.from + '&to=' + input.to + '&name=' + input.name + '&text=' + input.text)
+        $http.get('api/api.php?new_input&' + accessKey() + '&from=' + input.from + '&to=' + input.to + '&name=' + input.name + '&text=' + input.text + '&date=' + $routeParams.day)
             .success(function(data) {
                 console.log(data);
-
                 $scope.openNewInputForm = false;
+                loadInputs();
             });
 
         console.log(input);
@@ -204,6 +228,91 @@ calendarApp.controller('loginController', function($scope, $http, $location, $ro
             }).
             error(function(data) {
                 console.log(data);
+            });
+    };
+});
+
+calendarApp.controller('inputController', function($scope, $location, $rootScope, $routeParams, $http) {
+    var inputId = $routeParams.id;
+    var day = $routeParams.day;
+
+    $scope.day = day;
+    $scope.editMode = false;
+    $scope.editInputMessage = '';
+
+    var setEditInputData = function(input) {
+        var from = input.from.split(':');
+        var to = input.to.split(':');
+
+        return {
+            name: input.name,
+            text: input.note,
+            from_h: parseInt(from[0]),
+            from_m: parseInt(from[1]),
+            to_h: parseInt(to[0]),
+            to_m: parseInt(to[1])
+        };
+    };
+
+    var loadData = function() {
+        $http.get('api/api.php?input&' + accessKey() + '&input_id=' + inputId).
+            success(function(data) {
+                console.log(data);
+                $scope.input = data.input;
+                $scope.editInput = setEditInputData(data.input);
+                $scope.editInputMessage = '';
+            }).
+            error(function(data) {
+                console.log(data);
+            });
+    };
+
+    loadData();
+
+    $scope.deleteInput = function() {
+        if (confirm('Opravdu chcete smazat tento záznam?')) {
+            $http.get('api/api.php?delete_input&' + accessKey() + '&input_id=' + inputId).
+                success(function(data) {
+                    console.log(data);
+
+                    if (data.status) {
+                        $location.path('/den/' + day);
+                    }
+                }).
+                error(function(data) {
+                    console.log(data);
+                });
+        }
+    };
+
+    $scope.openEditForm = function() {
+        $scope.editMode = !$scope.editMode;
+    };
+
+    $scope.editInputSave = function(editInput) {
+        if (editInput == undefined || editInput.name == '') {
+            $scope.editInputMessage = 'Nebyly vyplněny všechny údaje';
+            return;
+        }
+
+        var input = editInput;
+        input = {
+            from: input.from_h == undefined || input.from_m == undefined ? null : input.from_h + '_' + input.from_m,
+            to: input.to_h == undefined || input.to_m == undefined ? null : input.to_h + '_' + input.to_m,
+            name: input.name == undefined ? null : input.name,
+            text: input.text == undefined ? null : input.text.replace('\n', '<br>')
+        };
+
+        if (input.from == null || input.to == null || input.name == null) {
+            $scope.editInputMessage = 'Nebyly vyplněny všechny údaje';
+            return;
+        }
+
+        $http.get('api/api.php?edit_input&' + accessKey() + '&from=' + input.from + '&to=' + input.to + '&name=' + input.name + '&text=' + input.text + '&date=' + $routeParams.day + "&input_id=" + inputId)
+            .success(function(data) {
+                console.log(data);
+                $scope.editMode = false;
+                loadData();
             });
     };
 });

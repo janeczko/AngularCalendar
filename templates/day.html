@@ -18,12 +18,8 @@
                         <label class="right inline">Od: </label>
                     </div>
                     <div class="large-10 medium-9 small-12 columns time-picker">
-                        <select ng-model="input.from_h" id="from_h">
-                            <option ng-repeat="i in range(24) track by $index" value="{{$index}}">{{$index}}</option>
-                        </select>
-                        <select ng-model="input.from_m" id="from_m">
-                            <option ng-repeat="i in range(60) track by $index" value="{{$index}}">{{$index}}</option>
-                        </select>
+                        <input type="number" max="23" min="0" ng-model="input.from_h" id="from_h" value="0" />
+                        <input type="number" max="59" min="0" ng-model="input.from_m" id="from_m" value="0" />
                     </div>
                 </div>
                 <div class="row">
@@ -31,12 +27,8 @@
                         <label class="right inline">Od: </label>
                     </div>
                     <div class="large-10 medium-9 small-12 columns time-picker">
-                        <select ng-model="input.to_h" id="to_h">
-                            <option ng-repeat="i in range(24) track by $index" value="{{$index}}" >{{$index}}</option>
-                        </select>
-                        <select ng-model="input.to_m" id="to_m">
-                            <option ng-repeat="i in range(60) track by $index" value="{{$index}}">{{$index}}</option>
-                        </select>
+                        <input type="number" ng-model="input.to_h" max="23" min="0" id="to_h" value="0" />
+                        <input type="number" ng-model="input.to_m" max="59" min="0" id="to_m" value="0" />
                     </div>
                 </div>
                 <div class="row">
@@ -57,6 +49,28 @@
                 {{newInputMessage}}
                 <a href="#" class="close">&times;</a>
             </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div ng-repeat="input in inputs track by $index" class="large-3 medium-4 small-12 columns" style="float: left">
+            <a href="#/den/{{dayUrl}}/zaznam/{{input.id}}" class="button input">
+                <h4>{{input.name}}</h4>
+                <p>{{input.time}}</p>
+            </a>
+
+            <!--<div id="calendar-layout">-->
+                <!--<div id="calendar-time-bar">-->
+                    <!--<div ng-repeat="i in range(24) track by $index">-->
+                        <!--<div style="position: absolute; top: {{$index * 60 + 10}}px; left: 15px">{{$index}}</div>-->
+                    <!--</div>-->
+                <!--</div>-->
+                <!--<div id="calendar-inputs">-->
+                    <!--<a href="#/den/{{dayUrl}}/zaznam/{{input.id}}" class="calendar-input button" ng-repeat="input in inputs" id="input-{{input.id}}" style="top: calc({{input.from_m}}px + 10px); height: calc({{input.to_m}}px - {{input.from_m}}px)">-->
+                        <!--{{input.name}}-->
+                    <!--</a>-->
+                <!--</div>-->
+            <!--</div>-->
         </div>
     </div>
 </div>

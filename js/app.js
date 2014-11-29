@@ -17,9 +17,9 @@ calendarApp.config(function($routeProvider) {
             controller: 'loginController'
         })
 
-        .when('/administration', {
-            templateUrl : 'templates/administration.html',
-            controller  : 'administrationController'
+        .when('/nastaveni/uzivatele', {
+            templateUrl : 'templates/adminUsers.html',
+            controller  : 'adminUsersController'
         })
 
         .when('/den/:day', {

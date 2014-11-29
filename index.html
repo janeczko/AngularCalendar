@@ -23,30 +23,37 @@
                     <nav class="top-bar" data-topbar role="navigation">
                         <ul class="title-area">
                             <li class="name">
-                                <h1><a href="#">Kalendář</a></h1>
+                                <h1><a href="#"><span class="fa fa-calendar fa-lg"></span>Kalendář</a></h1>
                             </li>
                             <li class="toggle-topbar menu-icon"><a><span>Menu</span></a></li>
                         </ul>
+
+                        <!--<section class="top-bar-section">-->
+                            <!---->
+                        <!--</section>-->
 
                         <section class="top-bar-section">
                             <ul class="middle">
                                 <li id="header-date"><a>{{todayDate}}</a></li>
                             </ul>
-                        </section>
 
-                        <section class="top-bar-section">
                             <ul class="right">
-                                <li ng-if="logged">
-                                    <a href="#"><span class="fa fa-home fa-lg"></span></a>
+                                <li ng-if="logged" class="{{activePage == 'main' ? 'active' : ''}}">
+                                    <a href="#"><span class="fa fa-home fa-lg"></span>Hlavní stránka</a>
+                                </li>
+                                <li ng-if="isAdmin()" class="has-dropdown {{activePage.split('-')[0] == 'admin' ? 'active' : ''}}">
+                                    <a><span class="fa fa-gear fa-lg"></span>Nastavení</a>
+                                    <ul class="dropdown">
+                                        <li class="{{activePage == 'admin-users' ? 'active' : ''}}">
+                                            <a href="#/nastaveni/uzivatele"><span class="fa fa-user fa-lg"></span>Uživatelé</a>
+                                        </li>
+                                    </ul>
                                 </li>
                                 <li ng-if="logged">
-                                    <a href="#/administration">Nastavení</a>
-                                </li>
-                                <li ng-if="logged">
-                                    <a href="#/logout">Odhlásit</a>
+                                    <a href="#/logout"><span class="fa fa-sign-out fa-lg"></span>Odhlásit</a>
                                 </li>
                                 <li ng-if="!logged" class="active">
-                                    <a href="#/login">Přihlásit</a>
+                                    <a href="#/login"><span class="fa fa-sign-in fa-lg"></span>Přihlásit</a>
                                 </li>
                             </ul>
                         </section>
@@ -61,6 +68,10 @@
         <script src="js/foundation.min.js"></script>
         <script>
             $(document).foundation();
+
+            $(document).ready(function() {
+                $('.dropdown .back').html('<span class="fa fa-chevron-left fa-lg"></span>Zpět');
+            });
         </script>
     </body>
 </html>

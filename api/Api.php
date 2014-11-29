@@ -14,7 +14,7 @@ class Api
 
     private function loginAction()
     {
-        $user = DB::oneQuery('SELECT id, username, password FROM user WHERE username LIKE ?', [$_GET['username']]);
+        $user = DB::oneQuery('SELECT id, username, password, admin FROM user WHERE username LIKE ?', [$_GET['username']]);
 
         if (!$user)
             $this->jsonResponse(['login_error' => 'username does not exist'], false);
@@ -22,6 +22,61 @@ class Api
             $this->jsonResponse(['login_error' => 'bad password'],false);
         else
             $this->jsonResponse($user);
+    }
+
+    private function changeRightsAction()
+    {
+        if ($this->hasAccess(true) and isset($_GET['user_id']) and isset($_GET['admin']))
+        {
+            DB::query('UPDATE user SET admin=? WHERE id=?', [$_GET['admin'], $_GET['user_id']]);
+
+            $this->jsonResponse();
+        }
+        else
+            $this->errorAction('access denied');
+    }
+
+    private function usersAction()
+    {
+        if ($this->hasAccess(true))
+        {
+            $users = DB::moreQuery('SELECT id, username, password, admin FROM user ORDER BY username');
+
+            for ($i = 0; $i < count($users); $i++)
+                $users[$i]['admin'] = $users[$i]['admin'] == '1';
+
+            $this->jsonResponse(['users' => $users]);
+        }
+        else
+            $this->errorAction('access denied');
+    }
+
+    private function deleteUserAction()
+    {
+        if ($this->hasAccess(true) and isset($_GET['user_id']))
+        {
+            DB::query('DELETE FROM user WHERE id=?', [$_GET['user_id']]);
+
+            $this->jsonResponse();
+        }
+        else
+            $this->errorAction('access denied');
+    }
+
+    private function createUserAction()
+    {
+        if ($this->hasAccess(true))
+        {
+            $user = DB::oneQuery('SELECT id FROM user WHERE username LIKE ?', [$_GET['username']]);
+            if ($user)
+                $this->jsonResponse(['message' => 'Uživatel už existuje.'], false);
+
+            DB::query('INSERT INTO user (username, password) VALUES (?, ?)', [$_GET['username'], sha1($_GET['password'])]);
+
+            $this->jsonResponse();
+        }
+        else
+            $this->errorAction('access denied');
     }
 
     private function editInputAction()
@@ -201,7 +256,7 @@ class Api
         exit;
     }
 
-    private function hasAccess()
+    private function hasAccess($admin = false)
     {
         if (!isset($_GET['ac_key']))
             return false;
@@ -212,9 +267,14 @@ class Api
             if (!isset($key[1]))
                 return false;
 
-            $user = DB::oneQuery('SELECT id FROM user WHERE id=? AND password=?', [$key[0], $key[1]]);
+            $user = DB::oneQuery('SELECT id, admin FROM user WHERE id=? AND password=?', [$key[0], $key[1]]);
 
-            return !$user ? false : true;
+            if (!$user)
+                return false;
+            else if ($admin)
+                return $user['admin'] == '1';
+            else
+                return true;
         }
     }
 

@@ -20,6 +20,14 @@ class Router
             $this->action = 'deleteInput';
         else if (isset($_GET['edit_input']))
             $this->action = 'editInput';
+        else if (isset($_GET['users']))
+            $this->action = 'users';
+        else if (isset($_GET['delete_user']))
+            $this->action = 'deleteUser';
+        else if (isset($_GET['create_user']))
+            $this->action = 'createUser';
+        else if (isset($_GET['change_rights']))
+            $this->action = 'changeRights';
         else
             $this->action = 'error';
 

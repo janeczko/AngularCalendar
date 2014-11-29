@@ -1,0 +1,64 @@
+<div class="large-12 medium-12 small-12 columns">
+    <h1>Uživatelé</h1>
+</div>
+
+<div class="large-12 medium-12 small-12 columns">
+    <button class="button small" ng-click="openCreateFrom()"><span class="fa fa-plus"></span>Nový uživatel</button>
+
+    <div class="row" ng-if="createMode">
+        <div class="large-7 medium-7 small-12 columns">
+            <div class="row">
+                <div class="large-4 medium-4 small-12 columns"><label class="left inline" for="login"><strong>Login: </strong></label></div>
+                <div class="large-8 medium-8 small-12 columns">
+                    <input type="text" id="login" ng-model="newUser.username"/>
+                </div>
+            </div>
+            <div class="row">
+                <div class="large-4 medium-4 small-12 columns"><label class="left inline" for="password"><strong>Heslo: </strong></label></div>
+                <div class="large-8 medium-8 small-12 columns">
+                    <input type="password" id="password" ng-model="newUser.password"/>
+                </div>
+            </div>
+            <div class="row">
+                <div class="large-4 medium-4 small-12 columns"><label class="left inline" for="password_v"><strong>Heslo znovu: </strong></label></div>
+                <div class="large-8 medium-8 small-12 columns">
+                    <input type="password" id="password_v" ng-model="newUser.password_v"/>
+                </div>
+            </div>
+            <div class="row">
+                <div class="large-12 medium-12 small-12 columns">
+                    <button class="button small" ng-click="createUser(newUser)">Vytvořit</button>
+                </div>
+            </div>
+        </div>
+        <div class="large-5 medium-5 small-12 columns">
+            <div ng-if="createMessage.length != 0" data-alert class="alert-box alert">
+                {{createMessage}}
+                <!--<a class="close">&times;</a>-->
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="large-12 medium-12 small-12 columns">
+    <!--<div class="panel">-->
+        <table id="users-table">
+            <tr>
+                <th>Login</th>
+                <th>Administrátor</th>
+                <th></th>
+            </tr>
+            <tr ng-repeat="user in users">
+                <td>{{user.username}}</td>
+                <td>
+                    <input ng-if="loggedUser != user.username" type="checkbox" ng-model="user.admin" class="middle inline" ng-change="changeUserRights(user)"/>
+                    <input ng-if="loggedUser == user.username" type="checkbox" ng-model="user.admin" disabled="disabled" class="middle inline"/>
+                </td>
+                <td>
+                    <a class="button tiny" title="Upravit"><span class="fa fa-edit"></span></a>
+                    <button class="button tiny alert" title="Smazat" ng-click="deleteUser(user.id)"><span class="fa fa-times"></span></button>
+                </td>
+            </tr>
+        </table>
+    <!--</div>-->
+</div>

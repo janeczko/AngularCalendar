@@ -1,7 +1,3 @@
-var init = function($scope) {
-    $scope.message = 'Welcome';
-};
-
 var spinnerString = function() {
     return '&nbsp;<span class="fa fa-spinner fa-lg fa-spin"></span>';
 };
@@ -49,6 +45,12 @@ calendarApp.controller('mainController', function($scope, $http, $filter, $rootS
     $scope.range = function(number) {
         return new Array(number);
     };
+
+    $rootScope.isAdmin = function() {
+        return isLogged() && sessionStorage.user_admin;
+    };
+
+    $rootScope.activePage = 'main';
 
     var date = new Date();
     $scope.todayString = $filter('date')(date, 'dd_MM_yyyy');
@@ -115,8 +117,66 @@ calendarApp.controller('mainController', function($scope, $http, $filter, $rootS
     };
 });
 
-calendarApp.controller('administrationController', function($scope) {
-    init($scope);
+calendarApp.controller('adminUsersController', function($scope, $http, $rootScope) {
+    $rootScope.activePage = 'admin-users';
+    $scope.createMode = false;
+    $scope.createMessage = '';
+    $scope.loggedUser = sessionStorage.user_username;
+
+    $scope.openCreateFrom = function() {
+        $scope.createMode = !$scope.createMode;
+        $scope.createMessage = '';
+    };
+
+    var loadUsers = function() {
+        $http.get('api/api.php?users&' + accessKey()).
+            success(function(data) {
+                console.log(data);
+                $scope.users = data.users;
+            });
+    };
+
+    loadUsers();
+
+    $scope.changeUserRights = function(user) {
+        $http.get('api/api.php?change_rights&' + accessKey() + '&user_id=' + user.id + '&admin=' + (user.admin ? '1' : '0')).
+            success(function(data) {
+                console.log(data);
+            });
+    };
+
+    $scope.deleteUser = function(id) {
+        if (confirm('Opravdu chcete smazat tohoto uživatele?')) {
+            $http.get('api/api.php?delete_user&' + accessKey() + '&user_id=' + id).
+                success(function(data) {
+                    console.log(data);
+                    loadUsers();
+                });
+        }
+    };
+
+    $scope.createUser = function(user) {
+        if (user == undefined || user.username == '' || user.password == '' || user.password_w == '') {
+            $scope.createMessage = 'Nebyly vyplněny všechny údaje.';
+        } else if (user.password.length < 5) {
+            $scope.createMessage = 'Heslo musí být delší než 5 znaků.';
+        } else if (user.password != user.password_v) {
+            $scope.createMessage = 'Hesla se neshodují.';
+        } else {
+            $http.get('api/api.php?create_user&' + accessKey() + "&username=" + user.username + '&password=' + user.password).
+                success(function(data) {
+                    console.log(data);
+
+                    if (!data.status) {
+                        $scope.createMessage = data.message;
+                    } else {
+                        $scope.createMessage = '';
+                        loadUsers();
+                        $scope.createMode = false;
+                    }
+                });
+        }
+    };
 });
 
 calendarApp.controller('logOutController', function($scope, $location, $rootScope) {
@@ -126,7 +186,9 @@ calendarApp.controller('logOutController', function($scope, $location, $rootScop
     $location.path('/login');
 });
 
-calendarApp.controller('dayController', function($scope, $http, $routeParams) {
+calendarApp.controller('dayController', function($scope, $http, $routeParams, $rootScope) {
+    $rootScope.activePage = 'day';
+
     $scope.dayUrl = $routeParams.day;
     var dayArray = $routeParams.day.split('_');
     $scope.day = (dayArray[0].charAt(0) == '0') ? dayArray[0].charAt(1) : dayArray[0];
@@ -188,6 +250,8 @@ calendarApp.controller('dayController', function($scope, $http, $routeParams) {
 });
 
 calendarApp.controller('loginController', function($scope, $http, $location, $rootScope) {
+    $rootScope.activePage = 'login';
+
     $scope.loginMessage = '';
     $scope.spinner = '';
 
@@ -221,6 +285,7 @@ calendarApp.controller('loginController', function($scope, $http, $location, $ro
                     sessionStorage.user_username = data.username;
                     sessionStorage.user_password = data.password;
                     sessionStorage.user_id = data.id;
+                    sessionStorage.user_admin = data.admin == 1;
 
                     $rootScope.logged = true;
                     $location.path('/');
@@ -233,6 +298,8 @@ calendarApp.controller('loginController', function($scope, $http, $location, $ro
 });
 
 calendarApp.controller('inputController', function($scope, $location, $rootScope, $routeParams, $http) {
+    $rootScope.activePage = 'input';
+
     var inputId = $routeParams.id;
     var day = $routeParams.day;
 

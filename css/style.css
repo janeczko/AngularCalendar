@@ -121,3 +121,30 @@
     color: white;
     font-size: 1.3em;
 }
+
+.top-bar .fa {
+    margin-right: 15px;
+}
+
+.top-bar .title {
+    color: white;
+    font-size: 0.8125rem;
+    padding: 8px 15px;
+    cursor: pointer;
+}
+
+#users-table {
+    width: 100%;
+}
+
+#users-table .fa {
+    margin-right: inherit;
+}
+
+#users-table .button {
+    margin-bottom: 0;
+}
+
+#users-table input[type=checkbox] {
+    margin-bottom: 0;
+}

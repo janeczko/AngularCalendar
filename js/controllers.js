@@ -289,6 +289,7 @@ calendarApp.controller('loginController', function($scope, $http, $location, $ro
 
                     $rootScope.logged = true;
                     $location.path('/');
+                    $('.dropdown .back').html('<span class="fa fa-chevron-left fa-lg"></span>Zpět');
                 }
             }).
             error(function(data) {

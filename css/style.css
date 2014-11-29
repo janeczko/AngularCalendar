@@ -1,5 +1,9 @@
+/* commercials */
 .dulezite,
-.partner {
+.partner,
+.oznamy,
+.zoznam,
+.souhrn {
     display: none;
 }
 
@@ -126,10 +130,10 @@
     margin-right: 15px;
 }
 
-.top-bar .title {
+.top-bar .back-button {
     color: white;
     font-size: 0.8125rem;
-    padding: 8px 15px;
+    padding: 8px 0;
     cursor: pointer;
 }
 

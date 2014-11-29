@@ -1,7 +1,9 @@
 <!DOCTYPE html>
 <html ng-app="calendarApp">
     <head>
+        <meta name="viewport" content="width=device-width">
         <meta charset="utf-8">
+
         <title>Kalendář</title>
 
         <link rel="stylesheet" href="css/foundation.min.css">
@@ -66,12 +68,20 @@
         </div>
 
         <script src="js/foundation.min.js"></script>
-        <script>
-            $(document).foundation();
+        <script src="js/foundation.topbar.js"></script>
+        <script src="js/foundation.reveal.js"></script>
 
-            $(document).ready(function() {
-                $('.dropdown .back').html('<span class="fa fa-chevron-left fa-lg"></span>Zpět');
-            });
+        <!--<script>-->
+            <!--$(document).foundation();-->
+        <!--</script>-->
+
+        <script>
+        $(document).foundation({
+            topbar: {
+                custom_back_text: true,
+                back_text: '<span class="back-button"><span class="fa fa-chevron-left fa-lg"></span>Zpět</span>'
+            }
+        });
         </script>
     </body>
 </html>

@@ -56,7 +56,8 @@
                 </td>
                 <td>
                     <a class="button tiny" title="Upravit"><span class="fa fa-edit"></span></a>
-                    <button class="button tiny alert" title="Smazat" ng-click="deleteUser(user.id)"><span class="fa fa-times"></span></button>
+                    <button ng-if="loggedUser != user.username" class="button tiny alert" title="Smazat" ng-click="deleteUser(user.id)"><span class="fa fa-times"></span></button>
+                    <button ng-if="loggedUser == user.username" class="button tiny alert" title="Smazat" disabled="disabled"><span class="fa fa-times"></span></button>
                 </td>
             </tr>
         </table>
